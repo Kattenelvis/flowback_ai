@@ -3,11 +3,9 @@ Git clone this project in flowback-backend/flowback_addon
 python3 -m venv venv
 source venv/bin/activate
 pip install openai
-pip install streamlit
 
 cd ../../
 pip install openai
-pip install streamlit
 
 
 Seems to work for some reason, even if the second pip install 
