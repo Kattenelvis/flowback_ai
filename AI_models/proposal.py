@@ -1,7 +1,7 @@
 import openai
 import os
 
-def test(prompt:str):
+def proposals(prompt:str):
     openai.api_key = os.getenv('OPENAI_API_KEY')
     client = openai.OpenAI()
 
