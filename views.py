@@ -22,5 +22,7 @@ class AIViewAPI(APIView):
         proposal_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', proposals_res.content, re.DOTALL)
         
         prediction_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', predictions.content, re.DOTALL)
+        
+        bets_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', bets.content, re.DOTALL)
 
         return Response(status=status.HTTP_200_OK, data={"proposals": proposal_array, "predictions": prediction_array, "bets": bets.content })
