@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from .AI_models.proposal import proposals
 from .AI_models.prediction_statement import prediction_statements
 from .AI_models.prediction_bets import prediction_bets
+from .AI_models.voter import voter
 import re
 
 # Create your views here.
@@ -25,4 +26,6 @@ class AIViewAPI(APIView):
         
         bets_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', bets.content, re.DOTALL)
 
-        return Response(status=status.HTTP_200_OK, data={"proposals": proposal_array, "predictions": prediction_array, "bets": bets.content })
+        voting = voter(proposals_res, predictions, bets)
+
+        return Response(status=status.HTTP_200_OK, data={"proposals": proposal_array, "predictions": predictions.content, "bets": bets.content, "voting":voting.content })
