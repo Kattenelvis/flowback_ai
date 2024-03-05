@@ -1,7 +1,7 @@
 import openai
 import os
 
-def test():
+def test(prompt:str):
     # openai.api_key = os.getenv('OPENAI_API_KEY')
     print(os.getenv('OPENAI_API_KEY'))
 
@@ -16,10 +16,11 @@ def test():
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-        {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+        {"role": "system", "content": prompt},
     ]
     )
 
-    print(completion.choices[0].message)
+    response = completion.choices[0].message
+
+    return response
 
