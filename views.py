@@ -6,15 +6,20 @@ from .AI_models.proposal import proposals
 from .AI_models.prediction_statement import prediction_statements
 from .AI_models.prediction_bets import prediction_bets
 from .AI_models.voter import voter
+from .AI_models.poll_titles import poll_titles
 import re
 
-# Create your views here.
+
 class AIViewAPI(APIView):
     def post(self, request):
 
         prompt = request.data.get('prompt')
+
+        poll_titles_res = poll_titles(prompt)
         
-        proposals_res = proposals(prompt)
+        poll_titles_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_titles_res.content, re.DOTALL)
+
+        proposals_res = proposals(poll_titles_array[0])
 
         predictions = prediction_statements(proposals_res.content)
 
@@ -28,4 +33,4 @@ class AIViewAPI(APIView):
 
         voting = voter(proposals_res, predictions, bets)
 
-        return Response(status=status.HTTP_200_OK, data={"proposals": proposal_array, "predictions": predictions.content, "bets": bets.content, "voting":voting.content })
+        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "proposals": proposal_array, "predictions": predictions.content, "bets": bets.content, "voting":voting.content })
