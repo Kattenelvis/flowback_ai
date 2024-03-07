@@ -1,13 +1,7 @@
-import openai
-import os
+from .client import get_client
 
 def proposals(prompt:str):
-    openai.api_key = os.getenv('OPENAI_API_KEY')
-    client = openai.OpenAI()
-
-    if openai.api_key is None:
-        print("Please set the OPENAI_API_KEY environment variable")
-        return None
+    client = get_client()
 
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",

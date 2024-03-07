@@ -1,15 +1,8 @@
-import openai
-import os
+from .client import get_client
+
 
 def prediction_bets(proposal_array:str, prediction_array:str):
-    openai.api_key = os.getenv('OPENAI_API_KEY')
-    client = openai.OpenAI()
-
-
-    if openai.api_key is None:
-        print("Please set the OPENAI_API_KEY environment variable")
-        return None
-    
+    client = get_client()    
 
     prompt = f"""
         The proposals are: {proposal_array}\n
