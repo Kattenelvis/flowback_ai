@@ -7,6 +7,7 @@ from .AI_models.prediction_statement import prediction_statements
 from .AI_models.prediction_bets import prediction_bets
 from .AI_models.voter import voter
 from .AI_models.poll_titles import poll_titles
+from .AI_models.area import area
 import re
 
 
@@ -40,9 +41,12 @@ class pollTitleAPI(APIView):
     def post(self, request):
         prompt = request.data.get('prompt')
 
-        poll_titles_response = poll_titles(prompt)
-        
+        poll_titles_response = poll_titles(prompt)        
         poll_titles_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_titles_response.content, re.DOTALL)
 
-        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array})
+        poll_areas_response = area(f"Title:{prompt}; Areas to choose from: Uncategorized, Housing, Economy, Environment, Social Studies, Education, Pool Parties, Recreation, Culture")
+        poll_areas_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_areas_response.content, re.DOTALL)
+
+
+        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "area":poll_areas_array})
         
