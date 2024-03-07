@@ -17,22 +17,24 @@ class AIViewAPI(APIView):
         title = request.data.get('title')
         area = request.data.get('area')
 
-        proposals_res = proposals(title)
-        proposal_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', proposals_res.content, re.DOTALL)
+        proposals_res = proposals(title).content
+        proposal_array = proposals_res.split("\n")
 
-        predictions = prediction_statements(proposals_res.content)
-        prediction_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', predictions.content, re.DOTALL)
+        predictions = prediction_statements(proposals_res).content
+        prediction_array = predictions.split("\n")
 
-        bets = prediction_bets(proposals_res.content, predictions.content)
-        bets_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', bets.content, re.DOTALL)
+        bets = prediction_bets(proposals_res, predictions).content
+        bets_array = bets.split("\n")
 
-        voting = voter(proposals_res, predictions, bets)
-        voting_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', voting.content, re.DOTALL)
+        voting = voter(proposals_res, predictions, bets).content
+        voting_array = voting.split("\n")
 
         return Response(status=status.HTTP_200_OK, data={
             "proposals": proposal_array, 
             "predictions": prediction_array, 
-            "bets": bets_array, 
+
+            "bets": bets_array,
+
             "voting":voting_array })
 
 
