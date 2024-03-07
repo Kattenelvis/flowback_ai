@@ -34,3 +34,15 @@ class AIViewAPI(APIView):
         voting = voter(proposals_res, predictions, bets)
 
         return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "proposals": proposal_array, "predictions": predictions.content, "bets": bets.content, "voting":voting.content })
+
+
+class pollTitleAPI(APIView):
+    def post(self, request):
+        prompt = request.data.get('prompt')
+
+        poll_titles_response = poll_titles(prompt)
+        
+        poll_titles_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_titles_response.content, re.DOTALL)
+
+        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array})
+        
