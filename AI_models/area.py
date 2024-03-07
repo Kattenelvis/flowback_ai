@@ -12,7 +12,7 @@ def area(prompt:str):
             
             You are specialized at selecting the area a poll should be in. You will be tasked with providing a numbered list on areas and nothing else.
             
-            List them up with a numbered list. 
+            List them up with a numbered list. Try to include between 2-4 areas. 
             
             User prompt will be an generally vague issue that you will put in some specific area, given by an list as user prompt.
 

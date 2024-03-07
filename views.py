@@ -14,27 +14,26 @@ import re
 class AIViewAPI(APIView):
     def post(self, request):
 
-        prompt = request.data.get('prompt')
+        title = request.data.get('title')
+        area = request.data.get('area')
 
-        poll_titles_res = poll_titles(prompt)
-        
-        poll_titles_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_titles_res.content, re.DOTALL)
-
-        proposals_res = proposals(poll_titles_array[0])
+        proposals_res = proposals(title)
+        proposal_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', proposals_res.content, re.DOTALL)
 
         predictions = prediction_statements(proposals_res.content)
+        prediction_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', predictions.content, re.DOTALL)
 
         bets = prediction_bets(proposals_res.content, predictions.content)
-
-        proposal_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', proposals_res.content, re.DOTALL)
-        
-        prediction_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', predictions.content, re.DOTALL)
-        
         bets_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', bets.content, re.DOTALL)
 
         voting = voter(proposals_res, predictions, bets)
+        voting_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', voting.content, re.DOTALL)
 
-        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "proposals": proposal_array, "predictions": predictions.content, "bets": bets.content, "voting":voting.content })
+        return Response(status=status.HTTP_200_OK, data={
+            "proposals": proposal_array, 
+            "predictions": prediction_array, 
+            "bets": bets_array, 
+            "voting":voting_array })
 
 
 class pollTitleAPI(APIView):
@@ -48,5 +47,5 @@ class pollTitleAPI(APIView):
         poll_areas_array = re.findall(r'\d+\.\s(.*?)(?=\d+\.\s|\Z)', poll_areas_response.content, re.DOTALL)
 
 
-        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "area":poll_areas_array})
+        return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "areas":poll_areas_array})
         
