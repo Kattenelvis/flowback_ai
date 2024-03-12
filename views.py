@@ -69,5 +69,17 @@ class prediction_statementAPI(APIView):
         predictions = prediction_statements(prompt).content
         prediction_array = predictions.split("\n")
 
-        return Response(status=status.HTTP_200_OK, data={"proposal": prediction_array[0]})
+        return Response(status=status.HTTP_200_OK, data={"predictions": prediction_array[0]})
+        
+
+class prediction_betsAPI(APIView):
+    def post(self, request):
+        proposals = request.data.get('proposals')
+        predictions = request.data.get('predictions')
+        
+
+        bets = prediction_bets(proposals, predictions).content
+        bets_array = bets.split("\n")
+
+        return Response(status=status.HTTP_200_OK, data={"bets": bets_array})
         
