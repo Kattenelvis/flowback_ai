@@ -51,3 +51,13 @@ class pollTitleAPI(APIView):
 
         return Response(status=status.HTTP_200_OK, data={"titles": poll_titles_array, "areas":poll_areas_array})
         
+
+class proposalAPI(APIView):
+    def post(self, request):
+        prompt = request.data.get('prompt')
+
+        proposals_res = proposals(prompt).content
+        proposal_array = proposals_res.split("\n")
+
+        return Response(status=status.HTTP_200_OK, data={"proposal": proposal_array[0]})
+        
