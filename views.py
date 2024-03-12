@@ -61,3 +61,13 @@ class proposalAPI(APIView):
 
         return Response(status=status.HTTP_200_OK, data={"proposal": proposal_array[0]})
         
+
+class prediction_statementAPI(APIView):
+    def post(self, request):
+        prompt = request.data.get('prompt')
+
+        predictions = prediction_statements(prompt).content
+        prediction_array = predictions.split("\n")
+
+        return Response(status=status.HTTP_200_OK, data={"proposal": prediction_array[0]})
+        
