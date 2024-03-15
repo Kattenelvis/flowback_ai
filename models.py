@@ -1,29 +1,29 @@
-from flowback.poll.models import Poll
-from flowback.comment.models import Comment
-from flowback.kanban.models import KanbanEntry
-
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.http import HttpResponse
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
-from celery import Celery, shared_task
-import environ
-from time import sleep
+from flowback.poll.models import Poll
+from flowback.comment.models import Comment
+from celery import  shared_task
+from datetime import datetime, timedelta
 
-@receiver(post_save, sender=Poll)
+@receiver(post_save, sender=Comment)
 def savePoll(sender, instance, *args, **kwargs):
     print("POLL UPDATE", sender, instance, args, kwargs)
-    task()
+
+    slight_future = datetime.now() + timedelta(seconds=5)
+    task.apply_async(eta=slight_future)
+    return HttpResponse("DONE")
 
 
 @shared_task
 def task():
-    sleep(5)
+    
+
+
     print("DONE")
     return "DONE"
-
-app = Celery('backend')
-env = environ.Env(RABBITMQ_BROKER_URL=str)
-broker_url = env('RABBITMQ_BROKER_URL')
 
 
