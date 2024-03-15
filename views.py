@@ -83,3 +83,5 @@ class prediction_betsAPI(APIView):
 
         return Response(status=status.HTTP_200_OK, data={"bets": bets_array})
         
+
+        
