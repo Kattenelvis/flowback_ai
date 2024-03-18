@@ -18,7 +18,7 @@ def savePoll(sender, instance, *args, **kwargs):
     print("POLL UPDATE", sender, instance, args, kwargs)
     
     proposal_task.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), eta=instance.area_vote_end_date)
-    prediction_statement_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id), eta=instance.proposal_end_date)
+    prediction_statement_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, end_date=instance.end_date), eta=instance.proposal_end_date)
     
     print("DID IT WORK?")
     return HttpResponse('Successful')

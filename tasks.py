@@ -8,6 +8,7 @@ from flowback.poll.services.proposal import poll_proposal_create
 from flowback.poll.selectors.proposal import poll_proposal_list
 from flowback.poll.services.prediction import poll_prediction_statement_create, poll_prediction_bet_create
 from flowback.user.selectors import get_user
+from datetime import datetime
 
 @shared_task
 def task(title:str, poll_id:int, user_id:int):
@@ -39,21 +40,21 @@ def proposal_task(title:str, poll_id:int, user_id:int):
 
 
 @shared_task
-def prediction_statement_task(poll_id:int, user_id:int):
+def prediction_statement_task(poll_id:int, user_id:int, end_date):
 
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
 
-    predictions = get_prediction_statements(proposals[0].title)
-    predictions_split = predictions.content.split(',')
+    predictions = get_prediction_statements(proposals[0].title, end_date)
+    predictions_split = predictions.content.split(';')
     print("PREDICTING", proposals, predictions, predictions_split)
 
-    segment = [dict(id=predictions_split[0].id, active=True)]
+    segment = [dict(id=int(predictions_split[0][3])-1, active=True)]
 
     poll_prediction_statement_create(user=user, 
                                      poll=poll_id, 
-                                     description=predictions_split[0].description, 
-                                     end_date=predictions_split[0].date, 
+                                     description=predictions_split[1], 
+                                     end_date=datetime.strptime(predictions_split[2].strip(), '%Y-%m-%d').date(), 
                                      segments=segment
                                     )
     return "DONE"
