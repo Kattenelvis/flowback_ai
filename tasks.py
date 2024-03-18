@@ -47,9 +47,9 @@ def prediction_statement_task(poll_id:int, user_id:int, end_date):
 
     predictions = get_prediction_statements(proposals[0].title, end_date)
     predictions_split = predictions.content.split(';')
-    print("PREDICTING", proposals, predictions, predictions_split)
+    print("PREDICTING", proposals, predictions, predictions_split, int(predictions_split[0][3])-1, dict(id=int(predictions_split[0][3])-1))
 
-    segment = [dict(id=int(predictions_split[0][3])-1, active=True)]
+    segment = [dict(proposal_id=proposals[int(predictions_split[0][3])-1].id, is_true=True)]
 
     poll_prediction_statement_create(user=user, 
                                      poll=poll_id, 
