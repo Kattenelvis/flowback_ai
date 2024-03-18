@@ -2,6 +2,7 @@ from .client import get_client
 
 def area(prompt:str):
     client = get_client()
+    print("AREA VOTING", prompt)
 
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",

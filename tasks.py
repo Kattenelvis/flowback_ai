@@ -1,80 +1,25 @@
-from flowback.poll.models import Poll
-from flowback.comment.models import Comment
-from flowback.kanban.models import KanbanEntry
-
-from django.db import models
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-
-from celery import Celery, shared_task
+from celery import shared_task
 import environ
 from time import sleep
 
-@receiver(post_save, sender=Poll)
-def savePoll(sender, instance, *args, **kwargs):
-    print("POLL UPDATE", sender, instance, args, kwargs)
-    task()
+import json
+import requests
+from django.http import HttpResponse
 
+from .AI_models.area import area
+from flowback.poll.services.area import poll_area_statement_vote_update
 
-@shared_task
-def task():
-    sleep(5)
-    print("DONE")
-    return "DONE"
-
-app = Celery('backend')
-env = environ.Env(RABBITMQ_BROKER_URL=str)
-broker_url = env('RABBITMQ_BROKER_URL')
-
-
-# from django.dispatch import receiver
-# from django.db.models.signals import post_save
-# from django.http import HttpResponse
-
-# from flowback.poll.models import Poll
-# from flowback.comment.models import Comment
-# from celery import  shared_task
-
-# import requests
-# import json
-
-# # start_date
-# # area_vote_end_date
-# # proposal_end_date
-# # prediction_statement_end_date
-# # prediction_bet_end_date
-# # delegate_vote_end_date
-# # vote_end_date
-# # end_date
-
-# @receiver(post_save, sender=Comment)
-# def savePoll(sender, instance, *args, **kwargs):
-#     print("HERE at save poll")
-#     # get_request()
-#     # task.apply_async(eta=instance.start_date)
-#     # return HttpResponse("DONE")
-
-
-# @shared_task
-# def task():
-#     post_request()
-#     print("DONE")
-#     return "DONE"
-
-
-# def post_request():
+# def post_request(id:int, group_id:int, payload):
 #     print("IS NOW POSTING")
-#     url = "http://localhost:8000/group/poll/55/area/update"
+#     url = f"http://localhost:8000/group/poll/{group_id}/area/update"
 #     header = {
 #     "Content-Type":"application/json",
-#     }
-#     payload = {   
-#         "tag":"2",
-#         "vote":"true"
+#     "Authorization": "Token c0b06baef35a5068e18c8fe4d2c383bc20fc4c7d"
 #     }
 #     result = requests.post(url,  data=json.dumps(payload), headers=header)
 #     if result.status_code == 200:
 #         return HttpResponse('Successful')
+#     print("RESULSTS", result)
 #     return HttpResponse('Something went wrong')
 
 # def get_request():
@@ -89,3 +34,23 @@ broker_url = env('RABBITMQ_BROKER_URL')
 #         return HttpResponse('Successful')
 #     print("boooo", results)
 #     return HttpResponse('Something went wrong')
+
+
+
+
+@shared_task
+def task(title:str, poll_id:int, user_id:int):
+    print("DOING", title, id)
+
+    tag = area(title)
+
+    print("LE TAG", tag)
+
+    # payload = {
+    #     "vote":"true",
+    #     "tag": "2"
+    # }
+
+    poll_area_statement_vote_update(user_id=user_id, poll_id=poll_id, tag=2, vote=True)
+    # post_request(title, group_id, payload)
+    return "DONE"

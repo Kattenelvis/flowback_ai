@@ -10,7 +10,6 @@ from .AI_models.poll_titles import poll_titles
 from .AI_models.area import area
 import re
 
-
 class AIViewAPI(APIView):
     def post(self, request):
 
