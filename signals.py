@@ -1,7 +1,7 @@
 from flowback.poll.models import Poll
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from .tasks import task, proposalTask
+from .tasks import task, proposal_task, prediction_statement_task
 from django.http import HttpResponse
 
 # start_date	
@@ -16,6 +16,9 @@ from django.http import HttpResponse
 @receiver(post_save, sender=Poll)
 def savePoll(sender, instance, *args, **kwargs):
     print("POLL UPDATE", sender, instance, args, kwargs)
-    proposalTask.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), eta=instance.area_vote_end_date)
+    
+    proposal_task.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), eta=instance.area_vote_end_date)
+    prediction_statement_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id), eta=instance.proposal_end_date)
+    
     print("DID IT WORK?")
     return HttpResponse('Successful')

@@ -21,7 +21,7 @@ def poll_titles(prompt:str):
          
         Avoid using text formatting.
          
-          """},
+        """},
         {"role": "user", "content": prompt},
     ]
     )
