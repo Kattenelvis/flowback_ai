@@ -1,9 +1,9 @@
 from celery import shared_task
-from .AI_models.area import area
-from .AI_models.proposal import proposals as get_proposals
-from .AI_models.prediction_statement import prediction_statements as get_prediction_statements 
-from .AI_models.prediction_bets import prediction_bets
-from .AI_models.voter import voter
+from .AI_generators.area import area
+from .AI_generators.proposal import proposals as get_proposals
+from .AI_generators.prediction_statement import prediction_statements as get_prediction_statements 
+from .AI_generators.prediction_bets import prediction_bets
+from .AI_generators.voter import voter
 from flowback.poll.services.area import poll_area_statement_vote_update
 from flowback.poll.services.proposal import poll_proposal_create
 from flowback.poll.selectors.proposal import poll_proposal_list
@@ -15,9 +15,9 @@ from datetime import datetime
 import re
 import os
 
+# Currently Unused
 @shared_task
-def area_vote_task(title:str, poll_id:int, user_id:int):
-    # Currently Unused
+def area_vote_agent(title:str, poll_id:int, user_id:int):
     print("DOING", title, id)
 
     tags = area(title, "Uncategorized,Burn")
@@ -33,7 +33,7 @@ def area_vote_task(title:str, poll_id:int, user_id:int):
 
 
 @shared_task
-def proposal_task(title:str, poll_id:int, user_id:int):
+def proposal_agent(title:str, poll_id:int, user_id:int):
 
     background_info = get_background_info("proposals")
     
@@ -44,12 +44,13 @@ def proposal_task(title:str, poll_id:int, user_id:int):
 
     print("PROPOSALS", proposals, proposals_split)
 
-    poll_proposal_create(user_id=user_id, poll_id=poll_id, title=proposals_split[0], description=" ")
+    for proposal in proposals_split:
+        poll_proposal_create(user_id=user_id, poll_id=poll_id, title=proposal, description=" ")
     return "DONE"
 
 
 @shared_task
-def prediction_statement_task(poll_id:int, user_id:int, end_date):
+def prediction_statement_agent(poll_id:int, user_id:int, end_date):
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
     background_info = get_background_info("proposals")
@@ -70,7 +71,7 @@ def prediction_statement_task(poll_id:int, user_id:int, end_date):
 
 
 @shared_task
-def prediction_betting_task(poll_id:int, group_id:int, user_id:int):
+def prediction_betting_agent(poll_id:int, group_id:int, user_id:int):
 
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
@@ -97,7 +98,7 @@ def prediction_betting_task(poll_id:int, group_id:int, user_id:int):
 
 
 @shared_task
-def delegation_voting_task(poll_id:int, group_id:int, user_id:int):
+def delegation_voting_agent(poll_id:int, group_id:int, user_id:int):
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
     background_info = get_background_info("proposals")

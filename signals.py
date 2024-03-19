@@ -1,7 +1,7 @@
 from flowback.poll.models import Poll
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from .tasks import proposal_task, prediction_statement_task, prediction_betting_task, delegation_voting_task
+from .agents import proposal_agent, prediction_statement_agent, prediction_betting_agent, delegation_voting_agent
 from django.http import HttpResponse
 
 # start_date	
@@ -17,16 +17,16 @@ from django.http import HttpResponse
 def savePoll(sender, instance, *args, **kwargs):
     print("POLL UPDATE", sender, instance, args, kwargs)
     
-    proposal_task.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), 
+    proposal_agent.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), 
         eta=instance.area_vote_end_date)
     
-    prediction_statement_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, end_date=instance.end_date), 
+    prediction_statement_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, end_date=instance.end_date), 
         eta=instance.proposal_end_date)
     
-    prediction_betting_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
+    prediction_betting_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
         eta=instance.prediction_statement_end_date)
     
-    delegation_voting_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
+    delegation_voting_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
         eta=instance.delegate_vote_end_date)
     
 
