@@ -13,6 +13,7 @@ from flowback.user.selectors import get_user
 from flowback.poll.services.vote import poll_proposal_delegate_vote_update, poll_proposal_vote_update
 from datetime import datetime
 import re
+import os
 
 @shared_task
 def area_vote_task(title:str, poll_id:int, user_id:int):
@@ -33,9 +34,12 @@ def area_vote_task(title:str, poll_id:int, user_id:int):
 
 @shared_task
 def proposal_task(title:str, poll_id:int, user_id:int):
-    print("DOING", title, id)
 
-    proposals = get_proposals(title)
+    background_info = get_background_info("proposals")
+    
+    print("DOING", title, id, background_info)
+
+    proposals = get_proposals(poll_title=title, background_info=background_info)
     proposals_split = proposals.content.split(',')
 
     print("PROPOSALS", proposals, proposals_split)
@@ -126,6 +130,17 @@ def delegation_voting_task(poll_id:int, group_id:int, user_id:int):
     poll_proposal_vote_update(user_id=user_id, poll_id=poll_id, data=data)
 
     return 'DONE'
+
+
+def get_background_info(filename:str):
+    background_info = ""
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, f'background_info/{filename}.txt')
+    with open(filename, 'r') as file:
+        background_info = file.read().replace('\n', '')
+
+    return background_info
+
 
 #TODO: Refactor so these two are the same function
 def extract_prediction_number(text):
