@@ -86,7 +86,7 @@ def prediction_betting_task(poll_id:int, group_id:int, user_id:int):
 
     score /= 20
 
-    prediction_id = extract_prediction_number(generated_predictions[0])
+    prediction_id = extract_prediction_number(generated_predictions_split[0])
 
     poll_prediction_bet_create(user=user_id, score=score, prediction_statement_id=prediction_id)
     return "DONE"
@@ -97,14 +97,17 @@ def delegation_voting_task(poll_id:int, group_id:int, user_id:int):
     
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
+
     predictions = poll_prediction_statement_list(group_id=group_id, fetched_by=user)
-    prediction_bets = poll_prediction_bet_list(group_id=group_id, fetched_by=user)
+    filtered_predictions = [obj for obj in predictions if obj.poll_id == poll_id]
+    
+    
 
     votes = voter(prediction_array=predictions, 
-          prediction_bets=prediction_bets, 
+          prediction_bets=[], 
           proposal_array=proposals)
 
-    print("VOOTER", votes)
+    print("VOOTER", votes, filtered_predictions, proposals)
 
     # poll_proposal_vote_update(user_id=user_id, poll_id=poll_id, data=votes)
 

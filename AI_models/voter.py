@@ -7,9 +7,9 @@ def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
     prompt = f"""
         The proposals are: {proposal_array}\n
 
-        The predictions on those proposals are: {prediction_array}
+        The predictions, with their respective "score" being their bet, on those proposals are: {prediction_array}
 
-        The prediction bets on those proposals are: {prediction_bets}
+        
     """    
 
 
