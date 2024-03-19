@@ -17,7 +17,7 @@ from django.http import HttpResponse
 def savePoll(sender, instance, *args, **kwargs):
     print("POLL UPDATE", sender, instance, args, kwargs)
     
-    proposal_agent.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id), 
+    proposal_agent.apply_async(kwargs=dict(title=instance.title, poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
         eta=instance.area_vote_end_date)
     
     prediction_statement_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, end_date=instance.end_date), 

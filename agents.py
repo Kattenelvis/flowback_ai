@@ -10,6 +10,8 @@ from flowback.poll.selectors.proposal import poll_proposal_list
 from flowback.poll.services.prediction import poll_prediction_statement_create, poll_prediction_bet_create
 from flowback.poll.selectors.prediction import poll_prediction_statement_list, poll_prediction_bet_list
 from flowback.user.selectors import get_user
+from flowback.poll.models import PollProposal
+from flowback.group.selectors import group_user_list
 from flowback.poll.services.vote import poll_proposal_delegate_vote_update, poll_proposal_vote_update
 from datetime import datetime
 import re
@@ -34,7 +36,7 @@ def area_vote_agent(title:str, poll_id:int, user_id:int):
 
 
 @shared_task
-def proposal_agent(title:str, poll_id:int, user_id:int):
+def proposal_agent(title:str, poll_id:int, user_id:int, group_id:int):
 
     background_info = get_background_info("proposals")
     
@@ -45,7 +47,23 @@ def proposal_agent(title:str, poll_id:int, user_id:int):
 
     print("PROPOSALS", proposals, proposals_split)
 
+    group_users = group_user_list(fetched_by=user_id, group=group_id)
+    group_user = None
+    for user in group_users:
+        if user.user.id == user_id:
+            group_user = user
+            break 
+
+    group_users = group_user_list(fetched_by=user_id, group=group_id)
+    group_user = None
+    for user in group_users:
+        if user.user.id == user_id:
+            group_user = user
+            break 
+
     for proposal in proposals_split:
+        proposal_thingy = PollProposal(poll_id=poll_id, created_by=group_user, poll=poll_id, title=proposal, description = " ")
+        proposal_thingy.save()
         poll_proposal_create(user_id=user_id, poll_id=poll_id, title=proposal, description=" ")
     return "DONE"
 
