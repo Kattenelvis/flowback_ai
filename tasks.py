@@ -50,11 +50,11 @@ def proposal_task(title:str, poll_id:int, user_id:int):
 
 @shared_task
 def prediction_statement_task(poll_id:int, user_id:int, end_date):
-
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
+    background_info = get_background_info("proposals")
 
-    predictions = get_prediction_statements(proposals[0].title, end_date)
+    predictions = get_prediction_statements(proposals[0].title, end_date, background_info)
     predictions_split = predictions.content.split(';')
     print("PREDICTING", proposals, predictions, predictions_split, int(predictions_split[0][3])-1, dict(id=int(predictions_split[0][3])-1))
 
@@ -75,10 +75,11 @@ def prediction_betting_task(poll_id:int, group_id:int, user_id:int):
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
     predictions = poll_prediction_statement_list(group_id=group_id, fetched_by=user)
+    background_info = get_background_info("proposals")
 
     filtered_predictions = [obj for obj in predictions if obj.poll_id == poll_id]
 
-    generated_predictions = prediction_bets(proposals, filtered_predictions)
+    generated_predictions = prediction_bets(proposals, filtered_predictions, background_info)
 
     print("BET",proposals, predictions, generated_predictions, filtered_predictions)
 
@@ -97,9 +98,9 @@ def prediction_betting_task(poll_id:int, group_id:int, user_id:int):
 
 @shared_task
 def delegation_voting_task(poll_id:int, group_id:int, user_id:int):
-    
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
+    background_info = get_background_info("proposals")
 
     predictions = poll_prediction_statement_list(group_id=group_id, fetched_by=user)
     filtered_predictions = [obj for obj in predictions if obj.poll_id == poll_id]
@@ -108,9 +109,9 @@ def delegation_voting_task(poll_id:int, group_id:int, user_id:int):
     print(bets[0].prediction_statement.poll.id)
 
     votes = voter(prediction_array=filtered_predictions, 
-          prediction_bets=[], 
-          proposal_array=proposals).content.split(",")
-
+        prediction_bets=[], 
+        proposal_array=proposals,
+        background_info=background_info).content.split(",")
 
     data = dict(proposals=[], scores=[])
     

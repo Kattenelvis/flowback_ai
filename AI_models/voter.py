@@ -1,7 +1,7 @@
 from .client import get_client
 
 
-def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
+def voter(proposal_array:str, prediction_array:str, prediction_bets:str, background_info:str):
     client = get_client()
 
     prompt = f"""
@@ -10,6 +10,8 @@ def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
         The predictions on those proposals are: {prediction_array}
 
         The prediction bets on those proposals are: {prediction_bets}
+
+        The background info is: {background_info}
     """    
 
 
@@ -26,7 +28,8 @@ def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
         
         List every single proposal and the amount of score you used.
         
-        Input prompt will be a set of proposal and predictions based on those proposals and bets based on those.
+        Input prompt will be a set of proposal and predictions based on those proposals and bets based on those. 
+        Input will also consist of background information.
 
         Your output will be a comma separated list where each listing must look like the following: "Proposal A: X points".
         Example: "Proposal 3: 55". Never state the entire proposal, only its position in the array. 

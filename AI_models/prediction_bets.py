@@ -1,13 +1,15 @@
 from .client import get_client
 
 
-def prediction_bets(proposal_array:str, prediction_array:str):
+def prediction_bets(proposal_array:str, prediction_array:str, background_info:str):
     client = get_client()    
 
     prompt = f"""
         The proposals are: {proposal_array}\n
 
         The predictions on those proposals are: {prediction_array}
+
+        The background info is: {background_info}
     """    
 
 
@@ -22,8 +24,9 @@ def prediction_bets(proposal_array:str, prediction_array:str):
          
         List them up with a comma separated list. 
          
-        User prompt will be a set of proposal and predictions based on those proposals.
-
+        User input will be a set of proposal and predictions based on those proposals.
+        Input will also consist of background information.
+         
         Your output will be a list where each listing must look like the following: 
         "I bet X on prediction A" where X can take on any of the following values: 0,20,40,60,80,100 and no others. 
         Example: "I bet 60 on prediction 4" and nothing else. 

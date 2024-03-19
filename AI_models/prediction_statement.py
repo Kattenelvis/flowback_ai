@@ -1,9 +1,16 @@
 from .client import get_client
 
 
-def prediction_statements(prompt:str, end_date):
+def prediction_statements(prompt:str, end_date, background_info:str):
     client = get_client()
     
+    prompt = f"""
+            Minimum date:{end_date}
+
+            Proposals: {prompt}
+
+            The background info is: {background_info}
+            """
 
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -16,8 +23,9 @@ def prediction_statements(prompt:str, end_date):
     
         List them up with a semicolon separated list. 
         
-        User prompt will be a set of proposal titles.
-
+        User input will be a set of proposal titles.
+        Input will also consist of background information.
+         
         Your output will be a list where each listing looks like the following:
         For example: "If 1; <prediction>; 2026-05-05;"
          
@@ -32,7 +40,7 @@ def prediction_statements(prompt:str, end_date):
         Avoid using text formatting. 
         
         """},
-        {"role": "user", "content": f"Minimum date:{end_date}; Proposals: {prompt}"},
+        {"role": "user", "content": prompt},
     ]
     )
 
