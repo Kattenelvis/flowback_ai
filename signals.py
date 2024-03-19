@@ -27,7 +27,7 @@ def savePoll(sender, instance, *args, **kwargs):
         eta=instance.prediction_statement_end_date)
     
     delegation_voting_task.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
-        eta=instance.prediction_bet_end_date)
+        eta=instance.delegate_vote_end_date)
     
 
     print("DID IT WORK?")

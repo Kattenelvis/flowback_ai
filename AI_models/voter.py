@@ -7,9 +7,9 @@ def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
     prompt = f"""
         The proposals are: {proposal_array}\n
 
-        The predictions, with their respective "score" being their bet, on those proposals are: {prediction_array}
+        The predictions on those proposals are: {prediction_array}
 
-        
+        The prediction bets on those proposals are: {prediction_bets}
     """    
 
 
@@ -29,9 +29,9 @@ def voter(proposal_array:str, prediction_array:str, prediction_bets:str):
         Input prompt will be a set of proposal and predictions based on those proposals and bets based on those.
 
         Your output will be a comma separated list where each listing must look like the following: "Proposal A: X points".
-        Example: "Proposal 3: 55 points". Never state the entire proposal, only its position in the array. 
+        Example: "Proposal 3: 55". Never state the entire proposal, only its position in the array. 
         
-        Example output would then be "Proposal 3: 55 points, Proposal 4: 76 points". The list is comma separated.
+        Example output would then be "Proposal 3: 55, Proposal 4: 76". The list is comma separated.
          
         NEVER simply copy the points given by the bets. They can be the same but only vote on what is reasonable and good.
 
