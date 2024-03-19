@@ -14,6 +14,7 @@ from flowback.poll.services.vote import poll_proposal_delegate_vote_update, poll
 from datetime import datetime
 import re
 import os
+from math import floor
 
 # Currently Unused
 @shared_task
@@ -55,18 +56,25 @@ def prediction_statement_agent(poll_id:int, user_id:int, end_date):
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
     background_info = get_background_info("proposals")
 
-    predictions = get_prediction_statements(proposals[0].title, end_date, background_info)
-    predictions_split = predictions.content.split(';')
+    all_proposal_titles = ''.join(proposal.title for proposal in proposals)
+    predictions = get_prediction_statements(all_proposal_titles, end_date, background_info)
+    predictions_split = predictions.content.replace('\n', '').split(';')
+
+    # segments = []
     print("PREDICTING", proposals, predictions, predictions_split, int(predictions_split[0][3])-1, dict(id=int(predictions_split[0][3])-1))
+    for i in range(floor(len(predictions_split)/3)):
+        segment = []
+        if proposals[int(predictions_split[i*3][3])-1]:
+            segment =[dict(proposal_id=proposals[int(predictions_split[i*3][3])-1].id, is_true=True)]
+        
+        poll_prediction_statement_create(user=user, 
+                                        poll=poll_id, 
+                                        description=predictions_split[i*3 + 1], 
+                                        end_date=datetime.strptime(predictions_split[2].strip(), '%Y-%m-%d').date(), 
+                                        segments=segment
+                                        )
+    # print("SEGMENTS", segments)
 
-    segment = [dict(proposal_id=proposals[int(predictions_split[0][3])-1].id, is_true=True)]
-
-    poll_prediction_statement_create(user=user, 
-                                     poll=poll_id, 
-                                     description=predictions_split[1], 
-                                     end_date=datetime.strptime(predictions_split[2].strip(), '%Y-%m-%d').date(), 
-                                     segments=segment
-                                    )
     return "DONE"
 
 
@@ -82,7 +90,7 @@ def prediction_betting_agent(poll_id:int, group_id:int, user_id:int):
 
     generated_predictions = prediction_bets(proposals, filtered_predictions, background_info)
 
-    print("BET",proposals, predictions, generated_predictions, filtered_predictions)
+    print("BET", proposals, predictions, generated_predictions, filtered_predictions)
 
     generated_predictions_split = generated_predictions.content.split(',')
     score = int(generated_predictions_split[0][6:8])
