@@ -100,6 +100,8 @@ def prediction_betting_agent(poll_id:int, group_id:int, user_id:int):
     print("BET", proposals, predictions, generated_predictions, filtered_predictions)
 
     generated_predictions_split = generated_predictions.content.split(',')
+
+
     score = int(generated_predictions_split[0][6:8])
     if (score == 10):
         score = 100

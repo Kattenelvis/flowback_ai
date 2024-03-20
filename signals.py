@@ -26,8 +26,8 @@ def savePoll(sender, instance, *args, **kwargs):
     prediction_betting_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
         eta=instance.prediction_statement_end_date)
     
-    delegation_voting_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
-        eta=instance.delegate_vote_end_date)
+    # delegation_voting_agent.apply_async(kwargs=dict(poll_id=instance.id, user_id=instance.created_by.id, group_id=instance.created_by.group_id), 
+    #     eta=instance.delegate_vote_end_date)
     
 
     print("DID IT WORK?")
