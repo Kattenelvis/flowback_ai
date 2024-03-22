@@ -20,3 +20,12 @@ from flowback_addon.flowback_ai.urls import ai_patterns
 addon_patterns = [
      path('ai/', include((ai_patterns, 'ai')))
 ]
+
+
+Also ensure that the environmental variable in main flowback-backend repo is set to
+OPENAI_API_KEY=<api-key> 
+
+Where <api-key> is your private key generated and paid for at https://platform.openai.com/api-keys
+
+In flowback-frontend, to access the buttons for the generators you put
+VITE_FLOWBACK_AI_MODULE = TRUE
