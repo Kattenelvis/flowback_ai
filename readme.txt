@@ -1,3 +1,5 @@
+This project first requires that you've installed Flowback backend. A setup can be found here https://github.com/Gofven/flowback-setup-docker
+
 Git clone this project in flowback-backend/flowback_addon
 
 python3 -m venv venv
