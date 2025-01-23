@@ -58,7 +58,7 @@ def proposal_agent(title:str, poll_id:int, user_id:int, group_id:int):
 
 
 @shared_task
-def prediction_statement_agent(poll_id:int, user_id:int, end_date):
+def prediction_statement_agent(poll_id:int, user_id:int, end_date=""):
     user = get_user(user_id)
     proposals = poll_proposal_list(poll_id=poll_id, fetched_by=user)
     background_info = get_background_info("proposals")

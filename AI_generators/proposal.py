@@ -1,6 +1,6 @@
 from .client import get_client
 
-def proposals(poll_title:str, background_info:str):
+def proposals(poll_title:str, background_info:str = ""):
     client = get_client()
 
     completion = client.chat.completions.create(

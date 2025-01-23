@@ -1,7 +1,7 @@
 from .client import get_client
 
 
-def prediction_statements(prompt:str, end_date, background_info:str):
+def prediction_statements(prompt:str, end_date="", background_info:str = ""):
     client = get_client()
     
     prompt = f"""

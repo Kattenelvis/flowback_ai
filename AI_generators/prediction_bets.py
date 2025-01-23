@@ -1,7 +1,7 @@
 from .client import get_client
 
 
-def prediction_bets(proposal_array:str, prediction_array:str, background_info:str):
+def prediction_bets(proposal_array:str, prediction_array:str, background_info:str = ""):
     client = get_client()    
 
     prompt = f"""

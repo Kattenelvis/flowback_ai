@@ -2,12 +2,12 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .AI_models.proposal import proposals
-from .AI_models.prediction_statement import prediction_statements
-from .AI_models.prediction_bets import prediction_bets
-from .AI_models.voter import voter
-from .AI_models.poll_titles import poll_titles
-from .AI_models.area import area
+from .AI_generators.proposal import proposals
+from .AI_generators.prediction_statement import prediction_statements
+from .AI_generators.prediction_bets import prediction_bets
+from .AI_generators.voter import voter
+from .AI_generators.poll_titles import poll_titles
+from .AI_generators.area import area
 import re
 
 class AIViewAPI(APIView):
@@ -54,6 +54,7 @@ class pollTitleAPI(APIView):
 class proposalAPI(APIView):
     def post(self, request):
         prompt = request.data.get('prompt')
+        print(prompt, "PROOMPT")
 
         proposals_res = proposals(prompt).content
         proposal_array = proposals_res.split("\n")

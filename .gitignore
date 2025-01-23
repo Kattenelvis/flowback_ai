@@ -1,5 +1,6 @@
 venv
 /__pycache__
-/AI_models/__pycache__
+/AI_generators/__pycache__
+AI_generators/__pycache__
 migrations
 .env

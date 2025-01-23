@@ -1,7 +1,7 @@
 from .client import get_client
 
 
-def voter(proposal_array:str, prediction_array:str, prediction_bets:str, background_info:str):
+def voter(proposal_array:str, prediction_array:str, prediction_bets:str, background_info:str = ""):
     client = get_client()
 
     prompt = f"""
