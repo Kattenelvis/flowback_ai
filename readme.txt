@@ -19,7 +19,7 @@ addon_patterns = [
 ]
 
 
-Also ensure that the environmental variable in main flowback-backend repo is set to
+Also ensure that the environment variable in main flowback-backend repo is set to
 INTEGRATIONS="flowback_addon.flowback_ai"
 OPENAI_API_KEY=<api-key> 
 
