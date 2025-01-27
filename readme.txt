@@ -2,6 +2,7 @@ This project first requires that you've installed Flowback backend. A setup can 
 
 Git clone this project in flowback-backend/flowback_addon
 
+Navigate to flowback-backend
 python3 -m venv venv 
 Linux: source venv/bin/activate
 Windows: venv\Scripts\activate
